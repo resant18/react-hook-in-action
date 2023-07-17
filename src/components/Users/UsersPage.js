@@ -1,5 +1,5 @@
-import React from "react";
-import { UsersList } from "./UsersList";
+import React from 'react';
+import { UsersList } from './UsersList';
 
 export const UsersPage = () => {
    return (

@@ -1,5 +1,5 @@
-import React, { Fragment, useState } from "react";
-import { users } from "../../static.json";
+import React, { Fragment, useState } from 'react';
+import { users } from '../../static.json';
 
 export const UsersList = () => {
    const userList = users;

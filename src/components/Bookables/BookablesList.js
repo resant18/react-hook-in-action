@@ -1,29 +1,48 @@
-// BOOKABLES LIST WITHOUT HOOK
-import React, { Fragment, useState } from "react";
-import { bookables, sessions, days } from "../../static.json";
-import { FaArrowRight } from "react-icons/fa";
+// BOOKABLES LIST WITH HOOK
+import React, { Fragment, useReducer } from 'react';
+import { bookables, sessions, days } from '../../static.json';
+import { reducer } from './reducer';
+import { FaArrowRight } from 'react-icons/fa';
+
+const initialState = {
+   group: 'Rooms',
+   bookableIndex: 0,
+   hasDetails: true,
+   bookables,
+};
 
 export const BookablesList = () => {
-   const [group, setGroup] = useState("Rooms");
+   const [state, dispatch] = useReducer(reducer, initialState);
+   const { group, bookableIndex, hasDetails, bookables } = state;
    const bookablesInGroup = bookables.filter((b) => b.group === group);
-   const [bookablesIndex, setBookableIndex] = useState(0);
    const groups = [...new Set(bookables.map((b) => b.group))];
-   const [hasDetail, setHasDetail] = useState(false);
+   const bookable = bookablesInGroup[bookableIndex];
 
-   const bookable = bookablesInGroup[bookablesIndex];
    const nextBookable = () => {
-      // Lazy initial state:
-      // Pass the updater function a function to increment the index
-      // Passing a function here instead of the state value for the index to allow React efficiently
-      // schedule when any updates take place. (p.  55)
-      // rename bookablesIndex as i to shorten it.
-      setBookableIndex((i) => (i + 1) % bookablesInGroup.length);
+      dispatch({
+         type: 'NEXT_BOOKABLE',
+      });
    };
 
    const changeGroup = (e) => {
-      setGroup(e.target.value);
-      setBookableIndex(0);
-      setHasDetail(false);
+      dispatch({
+         type: 'SET_GROUP',
+         payload: e.target.value,
+      });
+   };
+
+   // This function replaced the setBookableIndex in Without React Hook
+   const changeBookable = (selectedIndex) => {
+      dispatch({
+         type: 'SET_BOOKABLE',
+         payload: selectedIndex,
+      });
+   };
+
+   const toggleHasDetails = () => {
+      dispatch({
+         type: 'TOGGLE_HAS_DETAILS',
+      });
    };
 
    return (
@@ -36,9 +55,9 @@ export const BookablesList = () => {
             </select>
             <ul className='bookables items-list-nav'>
                {bookablesInGroup.map((b, i) => (
-                  <li key={i} className={i === bookablesIndex ? "selected" : null}>
+                  <li key={i} className={i === bookableIndex ? 'selected' : null}>
                      {/* () => setBookableIndex(i) is called lazy initial state, to prevent function run  every time this component is refreshed*/}
-                     <button className='btn' onClick={() => setBookableIndex(i)}>
+                     <button className='btn' onClick={changeBookable}>
                         {b.title}
                      </button>
                   </li>
@@ -65,17 +84,17 @@ export const BookablesList = () => {
                      <span className='controls'>
                         <input
                            type='checkbox'
-                           id='hasDetail'
-                           name='hasDetail'
-                           checked={hasDetail}
-                           onChange={() => setHasDetail((hasDetail) => !hasDetail)}
+                           id='hasDetails'
+                           name='hasDetails'
+                           checked={hasDetails}
+                           onChange={toggleHasDetails}
                         />
-                        <label htmlFor='showDetail'>Show Detail</label>
+                        <label htmlFor='showDetails'>Show Details</label>
                      </span>
                   </div>
                   <p>{bookable.notes}</p>
 
-                  {hasDetail && (
+                  {hasDetails && (
                      <div className='item-details'>
                         <h3>Availability</h3>
                         <div className='bookable-availability'>

@@ -1,5 +1,5 @@
-import React from "react";
-import { BookablesList } from "./BookablesList";
+import React from 'react';
+import { BookablesList } from './BookablesList';
 
 export const BookablesPage = () => {
    return (

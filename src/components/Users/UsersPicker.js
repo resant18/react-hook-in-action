@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { users } from "../../static.json";
+import React, { useState } from 'react';
+import { users } from '../../static.json';
 
 export const UsersPicker = () => {
    return (
