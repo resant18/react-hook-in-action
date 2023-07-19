@@ -30,8 +30,7 @@ export const BookablesList = () => {
          payload: e.target.value,
       });
    };
-
-   // This function replaced the setBookableIndex in Without React Hook
+   
    const changeBookable = (selectedIndex) => {
       dispatch({
          type: 'SET_BOOKABLE',
@@ -57,7 +56,7 @@ export const BookablesList = () => {
                {bookablesInGroup.map((b, i) => (
                   <li key={i} className={i === bookableIndex ? 'selected' : null}>
                      {/* () => setBookableIndex(i) is called lazy initial state, to prevent function run  every time this component is refreshed*/}
-                     <button className='btn' onClick={changeBookable}>
+                     <button className='btn' onClick={() => changeBookable(i)}>
                         {b.title}
                      </button>
                   </li>
