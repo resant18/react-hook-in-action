@@ -1,48 +1,31 @@
-// BOOKABLES LIST WITH HOOK
-import React, { Fragment, useReducer } from 'react';
-import { bookables, sessions, days } from '../../static.json';
-import { reducer } from './reducer';
+// BOOKABLES LIST WITH HOOK & STORE USING REDUX TOOLKIT
+import React, { Fragment } from 'react';
+import { sessions, days } from '../../static.json';
+import { useSelector, useDispatch } from 'react-redux';
+import { getNextBookable, setBookableGroup, setBookableIndex, setHasDetails } from './BookablesSlice';
 import { FaArrowRight } from 'react-icons/fa';
 
-const initialState = {
-   group: 'Rooms',
-   bookableIndex: 0,
-   hasDetails: true,
-   bookables,
-};
-
-export const BookablesList = () => {
-   const [state, dispatch] = useReducer(reducer, initialState);
-   const { group, bookableIndex, hasDetails, bookables } = state;
+export const BookablesList = () => {   
+   const dispatch = useDispatch();
+   const { group, bookableIndex, hasDetails, bookables } = useSelector( state => state );            
    const bookablesInGroup = bookables.filter((b) => b.group === group);
    const groups = [...new Set(bookables.map((b) => b.group))];
-   const bookable = bookablesInGroup[bookableIndex];
+   const bookable = bookablesInGroup[bookableIndex];      
 
    const nextBookable = () => {
-      dispatch({
-         type: 'NEXT_BOOKABLE',
-      });
+      dispatch(getNextBookable());
    };
 
    const changeGroup = (e) => {
-      dispatch({
-         type: 'SET_GROUP',
-         payload: e.target.value,
-      });
+      dispatch(setBookableGroup(e.target.value));
    };
-
-   // This function replaced the setBookableIndex in Without React Hook
-   const changeBookable = (selectedIndex) => {
-      dispatch({
-         type: 'SET_BOOKABLE',
-         payload: selectedIndex,
-      });
+   
+   const changeBookable = (selectedIndex) => {      
+      dispatch(setBookableIndex(selectedIndex));
    };
 
    const toggleHasDetails = () => {
-      dispatch({
-         type: 'TOGGLE_HAS_DETAILS',
-      });
+      dispatch(setHasDetails());
    };
 
    return (
@@ -55,9 +38,8 @@ export const BookablesList = () => {
             </select>
             <ul className='bookables items-list-nav'>
                {bookablesInGroup.map((b, i) => (
-                  <li key={i} className={i === bookableIndex ? 'selected' : null}>
-                     {/* () => setBookableIndex(i) is called lazy initial state, to prevent function run  every time this component is refreshed*/}
-                     <button className='btn' onClick={changeBookable}>
+                  <li key={i} className={i === bookableIndex ? "selected" : null}>                     
+                     <button className='btn' onClick={() => changeBookable(i)}>
                         {b.title}
                      </button>
                   </li>
@@ -65,8 +47,7 @@ export const BookablesList = () => {
             </ul>
             <p>
                <button
-                  className='btn'
-                  //onClick={() => setBookableIndex((i) => (i + 1) % bookablesInGroup.length)} this is the same as onClick={nextBookable}
+                  className='btn'                  
                   onClick={nextBookable}
                   autoFocus
                >
@@ -99,12 +80,14 @@ export const BookablesList = () => {
                         <h3>Availability</h3>
                         <div className='bookable-availability'>
                            <ul>
-                              {bookable.days.sort().map((d, i) => (
-                                 <li key={i}>{days[d]}</li>
-                              ))}
+                              {
+                                 // Replaced sort() with toSorted() function to avoid a mutation during render.
+                                 bookable.days.toSorted().map((d, i) => (
+                                    <li key={i}>{days[d]}</li>
+                                 ))}
                            </ul>
                            <ul>
-                              {bookable.sessions.sort().map((s, i) => (
+                              {bookable.sessions.toSorted().map((s, i) => (
                                  <li key={i}>{sessions[s]}</li>
                               ))}
                            </ul>
@@ -117,3 +100,7 @@ export const BookablesList = () => {
       </Fragment>
    );
 };
+
+
+
+
