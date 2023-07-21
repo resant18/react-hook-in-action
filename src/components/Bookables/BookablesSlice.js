@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export const bookablesSlice = createSlice({
-   name: 'nextBookable',   
+   name: 'bookable',   
    initialState: {},
    reducers: {
       getNextBookable: (state, action) => {
