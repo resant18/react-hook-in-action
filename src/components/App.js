@@ -6,6 +6,7 @@ import { BookablesPage } from './Bookables/BookablesPage';
 import { BookingsPage } from './Bookings/BookingsPage';
 import { UsersPage } from './Users/UsersPage';
 import { UsersPicker } from './Users/UsersPicker.js';
+import { ResizeWindow } from './Users/learn';
 
 export default function App() {
    return (
@@ -35,6 +36,13 @@ export default function App() {
                            </FaUsers>
                         </Link>
                      </li>
+                     <li>
+                        <Link to='/learn' className='btn  btn-header'>
+                           <FaUsers>
+                              <span>Learn</span>
+                           </FaUsers>
+                        </Link>
+                     </li>
                   </ul>
                </nav>
                <UsersPicker />
@@ -44,6 +52,7 @@ export default function App() {
                <Route path='/bookings' element={<BookingsPage />} />
                <Route path='/bookables' element={<BookablesPage />} />
                <Route path='/users' element={<UsersPage />} />
+               <Route path='/learn' element={<ResizeWindow />} />
             </Routes>
          </div>
       </Router>
