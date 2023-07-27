@@ -26,14 +26,15 @@ export const bookablesSlice = createSlice({
          .addCase(getBookables.fulfilled, (state, action) => {
             return {
                ...state,
+               bookables: action.payload,
                isLoading: false,
-               error: false,
-               bookables: action.payload
+               error: false  
             }
          })
          .addCase(getBookables.pending, (state, action) => {
             return {
                ...state,
+               bookables: action.payload,
                isLoading: true,
                error: false                              
             }
@@ -43,6 +44,7 @@ export const bookablesSlice = createSlice({
             console.log(action.payload);
             return {
                ...state,
+               bookables: [],
                isLoading: false,
                error: action.payload
             }

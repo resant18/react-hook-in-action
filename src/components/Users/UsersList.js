@@ -1,20 +1,32 @@
 import React, { Fragment, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { FaSpinner } from 'react-icons/fa';
 
 export const UsersList = () => {
-   const userList = useSelector(state => state.user.data);
+   const {users, isLoading, error} = useSelector(state => state.user);
    const [selectedUserIndex, setSelectedUserIndex] = useState(0);
-   const [hasDetail, setHasDetail] = useState(false);
+   const [hasDetail, setHasDetail] = useState(false);   
 
-   const user = userList ? userList[selectedUserIndex] : '';
+   const user = users && Object.keys(users).length > 0 ? users[selectedUserIndex] : '';   
 
-   if (user === '') return;
+   if (isLoading) {
+      return (
+         <p><FaSpinner className='icon-loading'/>{''}Loading users...</p>
+      )
+   }   
+   
+   if (error) {
+      return <p>{error}</p>;
+   }
+
+   if (!Object.keys(users).length) return <p>No user list</p>;
+   if (user === '') return;   
 
    return (
       <Fragment>
          <div>
             <ul className='users items-list-nav'>
-               {userList.map((u, i) => (
+               {users.map((u, i) => (
                   <li key={i} className={i === selectedUserIndex ? 'selected' : null}>
                      <button className='btn' onClick={() => setSelectedUserIndex(i)}>
                         {u.name}

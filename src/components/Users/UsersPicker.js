@@ -14,16 +14,16 @@ export const UsersPicker = () => {
    // return the entire state, since it can lead to unnecessary rerenders.   
    // const { user } = useSelector(state => state);
 
-   const user = useSelector(state => state.user);
+   const { users, isLoading } = useSelector(state => state.user);
 
-   if (!user || Object.keys(user).length === 0) {
+   if (isLoading) {
       return <FaSpinner className='icon-loading' />
    }
    
    return (      
       <select>
          <option>Users</option>
-         {user.data.map((u, i) => (
+         {Object.keys(users).length && users.map((u, i) => (
             <option key={i}>{u.name}</option>
          ))}
       </select>

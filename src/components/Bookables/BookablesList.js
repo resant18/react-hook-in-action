@@ -11,16 +11,20 @@ export const BookablesList = () => {
 
    useEffect(() => {
       dispatch(getBookables());
-   }, []);      
-
-   console.log(error);
+   }, []);    
+   
+   if (isLoading) {
+      return (
+         <p><FaSpinner className='icon-loading' />{''}Loading bookables...</p>
+      )
+   }
    
    if (error) {
       return <p>{error}</p>;
-   }
+   }   
 
-   if (Object.keys(bookables).length === 0) {
-      return <p>No bookable data</p>
+   if (!bookables || !Object.keys(bookables).length || bookables.length === 0) {
+      return <p>No bookable data</p>;
    }
 
    const bookablesInGroup = bookables.filter((b) => b.group === group);
@@ -41,17 +45,7 @@ export const BookablesList = () => {
 
    const toggleHasDetails = () => {
       dispatch(setHasDetails());
-   };
-   
-   
-
-   if (isLoading) {
-      return (
-         <p>
-            <FaSpinner className='icon-loading' />{''}Loading bookables...
-         </p>
-      )
-   }
+   };   
 
    return (
       <Fragment>
