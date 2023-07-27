@@ -1,16 +1,31 @@
 // BOOKABLES LIST WITH HOOK & STORE USING REDUX TOOLKIT
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
+import { useSelector, useDispatch } from "react-redux";
+import { FaArrowRight, FaSpinner } from 'react-icons/fa';
 import { sessions, days } from '../../static.json';
-import { useSelector, useDispatch } from 'react-redux';
-import { getNextBookable, setBookableGroup, setBookableIndex, setHasDetails } from './BookablesSlice';
-import { FaArrowRight } from 'react-icons/fa';
+import { getBookables, getNextBookable, setBookableGroup, setBookableIndex, setHasDetails } from './BookablesSlice';
 
 export const BookablesList = () => {   
    const dispatch = useDispatch();
-   const { group, bookableIndex, hasDetails, bookables } = useSelector( state => state );            
+   const { group, bookableIndex, hasDetails, isLoading, error, bookables } = useSelector((state) => state.bookable);
+
+   useEffect(() => {
+      dispatch(getBookables());
+   }, []);      
+
+   console.log(error);
+   
+   if (error) {
+      return <p>{error}</p>;
+   }
+
+   if (Object.keys(bookables).length === 0) {
+      return <p>No bookable data</p>
+   }
+
    const bookablesInGroup = bookables.filter((b) => b.group === group);
    const groups = [...new Set(bookables.map((b) => b.group))];
-   const bookable = bookablesInGroup[bookableIndex];      
+   const bookable = bookablesInGroup[bookableIndex];
 
    const nextBookable = () => {
       dispatch(getNextBookable());
@@ -27,6 +42,16 @@ export const BookablesList = () => {
    const toggleHasDetails = () => {
       dispatch(setHasDetails());
    };
+   
+   
+
+   if (isLoading) {
+      return (
+         <p>
+            <FaSpinner className='icon-loading' />{''}Loading bookables...
+         </p>
+      )
+   }
 
    return (
       <Fragment>

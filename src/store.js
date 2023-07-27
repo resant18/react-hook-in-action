@@ -1,17 +1,14 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import bookableReducer from './components/Bookables/BookablesSlice';
-import { bookables } from './static.json';
+import userReducer from './components/Users/UsersSlice';
 
-const initialState = {
-   group: "Rooms",
-   bookableIndex: 0,
-   hasDetails: true,
-   bookables,
-};
+const reducer = combineReducers({   
+   bookable: bookableReducer,
+   user: userReducer
+});
 
 const store = configureStore({
-   reducer: bookableReducer,
-   preloadedState: initialState,
+   reducer
 });
 
 export default store;
