@@ -1,5 +1,5 @@
 // BOOKABLES LIST WITH HOOK & STORE USING REDUX TOOLKIT
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { FaArrowRight, FaSpinner } from 'react-icons/fa';
 import { sessions, days } from '../../static.json';
@@ -7,11 +7,37 @@ import { getBookables, getNextBookable, setBookableGroup, setBookableIndex, setH
 
 export const BookablesList = () => {   
    const dispatch = useDispatch();
-   const { group, bookableIndex, hasDetails, isLoading, error, bookables } = useSelector((state) => state.bookable);
+   const { group, bookableIndex, hasDetails, isLoading, error, bookables, isPresenting } = useSelector((state) => state.bookable);
+   const timerRef = useRef(null);
 
+   // Use useEffect because getBookables fetch data for the component
    useEffect(() => {
       dispatch(getBookables());
    }, []);    
+
+   // Use useEffect because it's working with timers
+   useEffect(() => {             
+      if (isPresenting) {             
+         scheduleNext();
+      }
+      else {         
+         clearPresenting();
+      }
+   });
+
+   const scheduleNext = () => {
+      if (timerRef.current === null) {
+         timerRef.current = setTimeout(() => {            
+            timerRef.current = null;                      
+            dispatch(getNextBookable(true));            
+         }, 3000);
+      }
+   }
+
+   const clearPresenting = () => {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;      
+   }
    
    if (isLoading) {
       return (
@@ -31,12 +57,18 @@ export const BookablesList = () => {
    const groups = [...new Set(bookables.map((b) => b.group))];
    const bookable = bookablesInGroup[bookableIndex];
 
-   const nextBookable = () => {
-      dispatch(getNextBookable());
+   const nextBookable = () => {          
+      dispatch(getNextBookable(false));
    };
 
    const changeGroup = (e) => {
       dispatch(setBookableGroup(e.target.value));
+
+      // Restarting the timer so that Presentation Mode shows the first item in the new group for its full, allotted time.
+      if (isPresenting) {
+         clearPresenting();
+         scheduleNext();
+      }      
    };
    
    const changeBookable = (selectedIndex) => {      

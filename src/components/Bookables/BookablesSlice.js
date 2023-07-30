@@ -18,6 +18,7 @@ export const bookablesSlice = createSlice({
       bookableIndex: 0,
       hasDetails: true,
       bookables:[],
+      isPresenting: false,
       isLoading: true,
       error: false
    },
@@ -27,6 +28,7 @@ export const bookablesSlice = createSlice({
             return {
                ...state,
                bookables: action.payload,
+               isPresenting: true,
                isLoading: false,
                error: false  
             }
@@ -35,16 +37,16 @@ export const bookablesSlice = createSlice({
             return {
                ...state,
                bookables: action.payload,
+               isPresenting: false,
                isLoading: true,
                error: false                              
             }
          })
-         .addCase(getBookables.rejected, (state, action) => {
-            console.log('rejected');
-            console.log(action.payload);
+         .addCase(getBookables.rejected, (state, action) => {            
             return {
                ...state,
                bookables: [],
+               isPresenting: false,
                isLoading: false,
                error: action.payload
             }
@@ -56,13 +58,14 @@ export const bookablesSlice = createSlice({
          
          return {
             ...state,
+            isPresenting: action.payload,
             bookableIndex: (state.bookableIndex + 1)  % count,
          }         
       },
       setBookableGroup: (state, action) => {
          return  {
             ...state,
-            group: action.payload,
+            group: action.payload,            
             bookableIndex: 0,
             hasDetails: false,
          }
@@ -70,6 +73,7 @@ export const bookablesSlice = createSlice({
       setBookableIndex: (state, action) => {
          return {
             ...state,
+            isPresenting: false,
             bookableIndex: action.payload
          }
       },
