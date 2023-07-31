@@ -9,6 +9,7 @@ export const BookablesList = () => {
    const dispatch = useDispatch();
    const { group, bookableIndex, hasDetails, isLoading, error, bookables, isPresenting } = useSelector((state) => state.bookable);
    const timerRef = useRef(null);
+   const nextFocusedButton = useRef();
 
    // Use useEffect because getBookables fetch data for the component
    useEffect(() => {
@@ -73,6 +74,7 @@ export const BookablesList = () => {
    
    const changeBookable = (selectedIndex) => {      
       dispatch(setBookableIndex(selectedIndex));
+      nextFocusedButton.current.focus();
    };
 
    const toggleHasDetails = () => {
@@ -100,6 +102,7 @@ export const BookablesList = () => {
                <button
                   className='btn'                  
                   onClick={nextBookable}
+                  ref={nextFocusedButton}
                   autoFocus
                >
                   <FaArrowRight>
