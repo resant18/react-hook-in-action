@@ -1,26 +1,54 @@
-import React, { Fragment, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { Fragment, useState, useRef, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { getNextUser, setUserIndex } from "./UsersSlice";
 import { FaSpinner } from 'react-icons/fa';
 
 export const UsersList = () => {
-   const {users, isLoading, error} = useSelector(state => state.user);
-   const [selectedUserIndex, setSelectedUserIndex] = useState(0);
-   const [hasDetail, setHasDetail] = useState(false);   
+   const {users, selectedUserIndex, isPresenting, isLoading, error} = useSelector(state => state.user);   
+   const [hasDetail, setHasDetail] = useState(false);  
+   const timerRef = useRef(null); 
+   const dispatch = useDispatch();
 
-   const user = users && Object.keys(users).length > 0 ? users[selectedUserIndex] : '';   
+   const user = users ? users[selectedUserIndex] : '';
+
+   useEffect(() => {
+      if (isPresenting) {
+         scheduleNext();
+      }
+      else {
+         clearPresenting();
+      };
+   });
+   
+   const scheduleNext = () => {
+      if (timerRef.current === null) {
+         timerRef.current = setTimeout(() => {
+            timerRef.current = null;
+            dispatch(getNextUser(true));
+         }, 3000);
+      };
+   };
+
+   const clearPresenting = () => {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+   };
+
+   const changeUser = (selectedIndex) => {
+      dispatch(setUserIndex(selectedIndex));
+   }
 
    if (isLoading) {
       return (
          <p><FaSpinner className='icon-loading'/>{''}Loading users...</p>
-      )
-   }   
+      );
+   };
    
    if (error) {
       return <p>{error}</p>;
-   }
+   };
 
-   if (!Object.keys(users).length) return <p>No user list</p>;
-   if (user === '') return;   
+   if (!Object.keys(users).length) return <p>No user list</p>;   
 
    return (
       <Fragment>
@@ -28,7 +56,7 @@ export const UsersList = () => {
             <ul className='users items-list-nav'>
                {users.map((u, i) => (
                   <li key={i} className={i === selectedUserIndex ? 'selected' : null}>
-                     <button className='btn' onClick={() => setSelectedUserIndex(i)}>
+                     <button className='btn' onClick={() => changeUser(i)}>
                         {u.name}
                      </button>
                   </li>
@@ -61,4 +89,4 @@ export const UsersList = () => {
          )}
       </Fragment>
    );
-};
+}

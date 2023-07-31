@@ -14,6 +14,8 @@ export const getUsers = createAsyncThunk('usersList/getUsers', async (_, {reject
 export const UsersSlice = createSlice({
    name: 'users',
    initialState: {
+      selectedUserIndex: 0,      
+      isPresenting: true,
       isLoading: true,
       error: false,
       users: []
@@ -23,6 +25,7 @@ export const UsersSlice = createSlice({
          .addCase(getUsers.fulfilled, (state, action) => {
             return {
                ...state,
+               isPresenting: true,
                users: action.payload,
                isLoading: false,
                error: false
@@ -31,6 +34,7 @@ export const UsersSlice = createSlice({
          .addCase(getUsers.pending, (state, action) => {
             return {
                ...state,
+               isPresenting: false,
                users: action.payload,
                isLoading: true,
                error: false,
@@ -39,6 +43,7 @@ export const UsersSlice = createSlice({
          .addCase(getUsers.rejected, (state, action) => {
             return {
                ...state,
+               isPresenting: false,
                users: [],
                isLoading: false,
                error: action.payload
@@ -50,7 +55,25 @@ export const UsersSlice = createSlice({
       // [getUsers.rejected]: (state) => {
       //    state.status = 'Failed to fetch data...';
       // }
+   },
+   reducers: {
+      getNextUser: (state, action) => {
+         const count = state.users.length;
+         return {
+            ...state,
+            selectedUserIndex: (state.selectedUserIndex + 1) % count,
+            isPresenting: action.payload,
+         }
+      },
+      setUserIndex: (state, action) => {
+         return {
+            ...state,         
+            selectedUserIndex: action.payload,
+            isPresenting: false
+         }
+      }
    }
 })
 
+export const { getNextUser, setUserIndex } = UsersSlice.actions;
 export default UsersSlice.reducer;
