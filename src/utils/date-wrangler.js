@@ -1,13 +1,12 @@
 export const addDays = (dtDate, daysToAdd) => {      
-   const clone = new Date(dtDate);
-   console.log(clone);
+   const clone = new Date(dtDate);   
    clone.setDate(clone.getDate() + daysToAdd);
    return clone;         
 }
 
 export const getWeek = (forDate, daysOffset = 0) => {
    const date = addDays(forDate, daysOffset);
-   const day = date.getDay();
+   const day = date.getDay();   
 
    return {
       date,

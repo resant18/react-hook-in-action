@@ -11,14 +11,11 @@ export const weekSlice = createSlice({
       getPrevWeek: (state, action) => {
          return getWeek(state.date, -7);
       },
-      getTodayWeek: (state, action) => {
+      getTodayWeek: (state, action) => {         
          return getWeek(new Date());
       },
       getDateOfWeek: (state, action) => {
-         return "string";
-         // state = getWeek(new Date(action.payload));
-         // console.log("get Week of a date");
-         // console.log(state);
+         return getWeek(new Date(action.payload));         
       }
    }
 });

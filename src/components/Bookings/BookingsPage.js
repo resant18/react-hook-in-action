@@ -5,9 +5,9 @@ export const BookingsPage = () => {
    return (
       <main className='bookings-page'>
          <p>Bookings!</p>
-         <p>
+         <div>
             <WeekPicker date={new Date()} />
-         </p>
+         </div>
       </main>
    );
 };
