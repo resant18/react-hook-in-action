@@ -3,16 +3,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import { sessions, days } from '../../static.json';
 import { setHasDetails } from './BookablesSlice';
 
-export const BookablesDetails = () => {
-   const { bookables, bookableIndex, hasDetails } = useSelector((state) => state.bookable);
-   const dispatch = useDispatch();   
-   const bookable = bookables ? bookables[bookableIndex] : null;
+export const BookablesDetails = ({ bookable }) => {
+   const { hasDetails } = useSelector((state) => state.bookable);
+   const dispatch = useDispatch();      
 
    const toggleHasDetails = () => {
       dispatch(setHasDetails());
-   };
+   };      
 
-   return bookable ?
+   return bookable && Object.keys(bookable).length ?
       (
          <div className='bookable-details'>
             <div className='item'>
