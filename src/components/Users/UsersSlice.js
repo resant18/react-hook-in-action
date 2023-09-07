@@ -14,7 +14,8 @@ export const getUsers = createAsyncThunk('usersList/getUsers', async (_, {reject
 export const UsersSlice = createSlice({
    name: 'users',
    initialState: {
-      selectedUserIndex: 0,      
+      selectedUserIndex: 0,
+      hasDetails: true,    
       isPresenting: true,
       isLoading: true,
       error: false,
@@ -69,11 +70,18 @@ export const UsersSlice = createSlice({
          return {
             ...state,         
             selectedUserIndex: action.payload,
-            isPresenting: false
+            isPresenting: false,
+         }
+      },
+      setHasDetails: (state, action) => {
+         return {
+            ...state,
+            hasDetails: !state.hasDetails,
          }
       }
    }
 })
 
-export const { getNextUser, setUserIndex } = UsersSlice.actions;
+//export const getUsers = (state) => state.user.users;
+export const { getNextUser, setUserIndex, setHasDetails } = UsersSlice.actions;
 export default UsersSlice.reducer;

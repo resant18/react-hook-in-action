@@ -1,15 +1,35 @@
-import React, { Fragment, useState, useRef, useEffect } from 'react';
+import React, { Fragment, useRef, useEffect, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getNextUser, setUserIndex } from "./UsersSlice";
+import { UserContext } from './UsersView';
 import { FaSpinner } from 'react-icons/fa';
 
 export const UsersList = () => {
-   const {users, selectedUserIndex, isPresenting, isLoading, error} = useSelector(state => state.user);   
-   const [hasDetail, setHasDetail] = useState(false);  
+   const { users, selectedUserIndex, isPresenting, isLoading, error } = useSelector(state => state.user);
+   const { user, setUser } = useContext(UserContext);
    const timerRef = useRef(null); 
-   const dispatch = useDispatch();
+   const dispatch = useDispatch();   
 
-   const user = users ? users[selectedUserIndex] : '';
+   // User Data is already fetched in the UsersPicker.
+   // However, this is another way to fetch it:
+   // const fetchUsers = (async () => {
+   //    dispatch(getUsers());
+   // })
+   //  OR:
+   // const fetchUsers =  useCallback(() => {
+   //    dispatch(getUsers());
+   // }, []);
+
+   // useEffect(() => {
+   //    fetchUsers();
+   //    setUser(users[selectedUserIndex]);
+   // }, []);
+
+   useEffect(() => {
+      if (!isLoading) {
+         setUser(users[selectedUserIndex]);
+      }      
+   }, [isLoading, selectedUserIndex]);   
 
    useEffect(() => {
       if (isPresenting) {
@@ -36,9 +56,9 @@ export const UsersList = () => {
 
    const changeUser = (selectedIndex) => {
       dispatch(setUserIndex(selectedIndex));
-   }
+   }   
 
-   if (isLoading) {
+   if (isLoading || !Object.keys(user).length) {
       return (
          <p><FaSpinner className='icon-loading'/>{''}Loading users...</p>
       );
@@ -46,7 +66,7 @@ export const UsersList = () => {
    
    if (error) {
       return <p>{error}</p>;
-   };
+   };   
 
    if (!Object.keys(users).length) return <p>No user list</p>;   
 
@@ -55,7 +75,7 @@ export const UsersList = () => {
          <div>
             <ul className='users items-list-nav'>
                {users.map((u, i) => (
-                  <li key={i} className={i === selectedUserIndex ? 'selected' : null}>
+                  <li key={u.id} className={u.id === user.id ? 'selected' : null}>
                      <button className='btn' onClick={() => changeUser(i)}>
                         {u.name}
                      </button>
@@ -63,30 +83,7 @@ export const UsersList = () => {
                ))}
             </ul>
          </div>
-         {user && (
-            <div className='user-details'>
-               <div className='item'>
-                  <div className='item-header'>
-                     <h2>{user.name}</h2>
-                     <span className='controls'>
-                        <input
-                           type='checkbox'
-                           name='hasDetail'
-                           checked={hasDetail}
-                           onChange={() => setHasDetail((hasDetail) => !hasDetail)}
-                        />
-                        <label htmlFor='showDetail'>Show Detail</label>
-                     </span>
-                  </div>
-                  {hasDetail && (
-                     <div className='item-details'>
-                        <p>Title: {user.title}</p>
-                        <p>Notes: {user.notes}</p>
-                     </div>
-                  )}
-               </div>
-            </div>
-         )}
+         
       </Fragment>
    );
 }

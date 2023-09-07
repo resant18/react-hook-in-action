@@ -1,10 +1,10 @@
 import React from 'react';
-import { UsersList } from './UsersList';
+import { UsersView } from './UsersView';
 
 export const UsersPage = () => {
    return (
       <main className='users-page'>
-         <UsersList />
+         <UsersView />
       </main>
    );
 };
