@@ -34,14 +34,14 @@ export const BookablesList = ({ setBookable }) => {
       dispatch(getBookables());                  
    }, []);   
 
-   useEffect(() => {      
-      if (!isLoading && bookableIndex !== undefined) {                
-         setBookable(bookablesInGroup[bookableIndex]);         
-      }
-   }, [isLoading, bookableIndex, setBookable]);
+   // useEffect(() => {      
+   //    if (!isLoading && bookableIndex !== undefined) {                
+   //       setBookable(bookablesInGroup[bookableIndex]);         
+   //    }
+   // }, [isLoading, bookableIndex, setBookable]);
 
    useEffect(() =>  {      
-      if (!isLoading && bookableIndex !== undefined) {         
+      if (!isLoading) {         
          setBookable(bookablesInGroup[bookableIndex]);
       }      
    }, [isLoading, bookableIndex]);
